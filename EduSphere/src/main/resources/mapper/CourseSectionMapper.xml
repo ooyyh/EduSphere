@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.ooyyh.edusphere.mapper.CourseSectionMapper">
+    
+    <!-- 章节结果映射 -->
+    <resultMap id="SectionResultMap" type="top.ooyyh.edusphere.entity.CourseSection">
+        <id property="id" column="id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="sortOrder" column="sort_order"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+    
+    <!-- 根据课程ID查询章节 -->
+    <select id="getSectionsByCourseId" resultMap="SectionResultMap">
+        SELECT * FROM course_section 
+        WHERE course_id = #{courseId} 
+        ORDER BY sort_order ASC, created_at ASC
+    </select>
+    
+    <!-- 根据ID查询章节 -->
+    <select id="getSectionById" resultMap="SectionResultMap">
+        SELECT * FROM course_section WHERE id = #{id}
+    </select>
+    
+    <!-- 插入章节 -->
+    <insert id="insertSection" parameterType="top.ooyyh.edusphere.entity.CourseSection" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO course_section (course_id, title, description, sort_order, created_at, updated_at)
+        VALUES (#{courseId}, #{title}, #{description}, #{sortOrder}, #{createdAt}, #{updatedAt})
+    </insert>
+    
+    <!-- 更新章节 -->
+    <update id="updateSection" parameterType="top.ooyyh.edusphere.entity.CourseSection">
+        UPDATE course_section 
+        SET title = #{title},
+            description = #{description},
+            sort_order = #{sortOrder},
+            updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+    
+    <!-- 删除章节 -->
+    <delete id="deleteSection">
+        DELETE FROM course_section WHERE id = #{id}
+    </delete>
+
+    <!-- 根据课程ID获取章节ID列表 -->
+    <select id="getSectionIdsByCourseId" resultType="java.lang.Integer">
+        SELECT id FROM course_section WHERE course_id = #{courseId} ORDER BY sort_order
+    </select>
+
+</mapper>

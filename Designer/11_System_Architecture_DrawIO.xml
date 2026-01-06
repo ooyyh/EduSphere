@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2025-09-28T14:00:00.000Z" agent="5.0" etag="xxx" version="22.1.16" type="device">
+  <diagram name="系统架构图" id="system-architecture">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- 用户层 -->
+        <mxCell id="user-layer" value="用户层 (User Layer)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#E8F5E8;strokeColor=#4CAF50;" vertex="1" parent="1">
+          <mxGeometry x="50" y="50" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="web-browser" value="Web浏览器" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="user-layer">
+          <mxGeometry x="10" y="30" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="mobile-browser" value="移动端浏览器" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="user-layer">
+          <mxGeometry x="110" y="30" width="80" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- 前端层 -->
+        <mxCell id="frontend-layer" value="前端层 (Frontend Layer)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#FF9800;" vertex="1" parent="1">
+          <mxGeometry x="300" y="50" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="vue-app" value="Vue 3 应用" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="frontend-layer">
+          <mxGeometry x="10" y="30" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="element-plus" value="Element Plus" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="frontend-layer">
+          <mxGeometry x="110" y="30" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vue-router" value="Vue Router" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="frontend-layer">
+          <mxGeometry x="10" y="70" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pinia" value="Pinia 状态管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="frontend-layer">
+          <mxGeometry x="110" y="70" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="axios" value="Axios HTTP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="frontend-layer">
+          <mxGeometry x="10" y="110" width="80" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- 后端层 -->
+        <mxCell id="backend-layer" value="后端层 (Backend Layer)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#E8F5E8;strokeColor=#4CAF50;" vertex="1" parent="1">
+          <mxGeometry x="550" y="50" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="spring-boot" value="Spring Boot" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="backend-layer">
+          <mxGeometry x="10" y="30" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="jwt" value="JWT 认证" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="backend-layer">
+          <mxGeometry x="110" y="30" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="mybatis" value="MyBatis-Plus" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="backend-layer">
+          <mxGeometry x="10" y="70" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="exception-handler" value="异常处理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="backend-layer">
+          <mxGeometry x="110" y="70" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cors" value="CORS 配置" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="backend-layer">
+          <mxGeometry x="10" y="110" width="80" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- 数据库层 -->
+        <mxCell id="database-layer" value="数据库层 (Database Layer)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#FF9800;" vertex="1" parent="1">
+          <mxGeometry x="800" y="50" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="mysql" value="MySQL 8.0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="database-layer">
+          <mxGeometry x="10" y="30" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="user-table" value="用户表" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="database-layer">
+          <mxGeometry x="110" y="30" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="course-table" value="课程表" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="database-layer">
+          <mxGeometry x="10" y="70" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="progress-table" value="学习进度表" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="database-layer">
+          <mxGeometry x="110" y="70" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="purchase-table" value="购买记录表" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;" vertex="1" parent="database-layer">
+          <mxGeometry x="10" y="110" width="80" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- 连接线 -->
+        <mxCell id="user-to-frontend" value="" style="endArrow=classic;html=1;rounded=0;strokeColor=#1976D2;strokeWidth=2;" edge="1" parent="1" source="user-layer" target="frontend-layer">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="250" y="100" as="sourcePoint" />
+            <mxPoint x="300" y="100" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="frontend-to-backend" value="" style="endArrow=classic;html=1;rounded=0;strokeColor=#1976D2;strokeWidth=2;" edge="1" parent="1" source="frontend-layer" target="backend-layer">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="500" y="125" as="sourcePoint" />
+            <mxPoint x="550" y="125" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="backend-to-database" value="" style="endArrow=classic;html=1;rounded=0;strokeColor=#1976D2;strokeWidth=2;" edge="1" parent="1" source="backend-layer" target="database-layer">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="750" y="125" as="sourcePoint" />
+            <mxPoint x="800" y="125" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 标题 -->
+        <mxCell id="title" value="EduSphere 在线教育平台 - 系统架构图" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="10" width="400" height="30" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

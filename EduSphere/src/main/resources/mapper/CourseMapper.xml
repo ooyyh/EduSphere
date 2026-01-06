@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.ooyyh.edusphere.mapper.CourseMapper">
+    
+    <!-- 课程结果映射 -->
+    <resultMap id="CourseResultMap" type="top.ooyyh.edusphere.entity.Course">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="subtitle" column="subtitle"/>
+        <result property="description" column="description"/>
+        <result property="coverImage" column="cover_image"/>
+        <result property="instructorId" column="instructor_id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="price" column="price"/>
+        <result property="originalPrice" column="original_price"/>
+        <result property="isFree" column="is_free"/>
+        <result property="level" column="level"/>
+        <result property="duration" column="duration"/>
+        <result property="studentCount" column="student_count"/>
+        <result property="rating" column="rating"/>
+        <result property="ratingCount" column="rating_count"/>
+        <result property="isHot" column="is_hot"/>
+        <result property="isNew" column="is_new"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <association property="instructor" javaType="top.ooyyh.edusphere.entity.User">
+            <id property="id" column="instructor_id"/>
+            <result property="username" column="instructor_name"/>
+            <result property="avatar" column="instructor_avatar"/>
+            <result property="email" column="instructor_email"/>
+        </association>
+    </resultMap>
+    
+    <!-- 根据ID查询课程详情 -->
+    <select id="getCourseById" resultMap="CourseResultMap">
+        SELECT c.*, 
+               u.id as instructor_id, 
+               u.username as instructor_name, 
+               u.avatar as instructor_avatar,
+               u.email as instructor_email,
+               cat.name as category_name
+        FROM course c
+        LEFT JOIN user u ON c.instructor_id = u.id
+        LEFT JOIN category cat ON c.category_id = cat.id
+        WHERE c.id = #{id}
+    </select>
+    
+    <!-- 分页查询课程列表 -->
+    <select id="getCourseList" resultMap="CourseResultMap">
+        SELECT c.*, 
+               u.id as instructor_id,
+               u.username as instructor_name, 
+               u.avatar as instructor_avatar,
+               u.email as instructor_email,
+               cat.name as category_name
+        FROM course c
+        LEFT JOIN user u ON c.instructor_id = u.id
+        LEFT JOIN category cat ON c.category_id = cat.id
+        WHERE c.status = 'published'
+        <if test="keyword != null and keyword != ''">
+            AND (c.title LIKE CONCAT('%', #{keyword}, '%') 
+                 OR c.description LIKE CONCAT('%', #{keyword}, '%')
+                 OR u.username LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        <if test="category != null and category != ''">
+            AND cat.slug = #{category}
+        </if>
+        <if test="level != null and level != ''">
+            AND c.level = #{level}
+        </if>
+        <if test="priceRange != null and priceRange != ''">
+            <choose>
+                <when test="priceRange == 'free'">
+                    AND c.is_free = 1
+                </when>
+                <when test="priceRange == '0-100'">
+                    AND c.price BETWEEN 0 AND 100
+                </when>
+                <when test="priceRange == '100-300'">
+                    AND c.price BETWEEN 100 AND 300
+                </when>
+                <when test="priceRange == '300-500'">
+                    AND c.price BETWEEN 300 AND 500
+                </when>
+                <when test="priceRange == '500+'">
+                    AND c.price > 500
+                </when>
+            </choose>
+        </if>
+        <choose>
+            <when test="sortBy == 'newest'">
+                ORDER BY c.created_at DESC
+            </when>
+            <when test="sortBy == 'popular'">
+                ORDER BY c.student_count DESC
+            </when>
+            <when test="sortBy == 'rating'">
+                ORDER BY c.rating DESC
+            </when>
+            <when test="sortBy == 'price-asc'">
+                ORDER BY c.price ASC
+            </when>
+            <when test="sortBy == 'price-desc'">
+                ORDER BY c.price DESC
+            </when>
+            <otherwise>
+                ORDER BY c.created_at DESC
+            </otherwise>
+        </choose>
+        LIMIT #{offset}, #{pageSize}
+    </select>
+    
+    <!-- 查询课程总数 -->
+    <select id="getCourseCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM course c
+        LEFT JOIN user u ON c.instructor_id = u.id
+        LEFT JOIN category cat ON c.category_id = cat.id
+        WHERE c.status = 'published'
+        <if test="keyword != null and keyword != ''">
+            AND (c.title LIKE CONCAT('%', #{keyword}, '%') 
+                 OR c.description LIKE CONCAT('%', #{keyword}, '%')
+                 OR u.username LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        <if test="category != null and category != ''">
+            AND cat.slug = #{category}
+        </if>
+        <if test="level != null and level != ''">
+            AND c.level = #{level}
+        </if>
+        <if test="priceRange != null and priceRange != ''">
+            <choose>
+                <when test="priceRange == 'free'">
+                    AND c.is_free = 1
+                </when>
+                <when test="priceRange == '0-100'">
+                    AND c.price BETWEEN 0 AND 100
+                </when>
+                <when test="priceRange == '100-300'">
+                    AND c.price BETWEEN 100 AND 300
+                </when>
+                <when test="priceRange == '300-500'">
+                    AND c.price BETWEEN 300 AND 500
+                </when>
+                <when test="priceRange == '500+'">
+                    AND c.price > 500
+                </when>
+            </choose>
+        </if>
+    </select>
+    
+    <!-- 查询热门课程 -->
+    <select id="getHotCourses" resultMap="CourseResultMap">
+        SELECT c.*, 
+               u.id as instructor_id,
+               u.username as instructor_name, 
+               u.avatar as instructor_avatar,
+               u.email as instructor_email,
+               cat.name as category_name
+        FROM course c
+        LEFT JOIN user u ON c.instructor_id = u.id
+        LEFT JOIN category cat ON c.category_id = cat.id
+        WHERE c.status = 'published' AND c.is_hot = 1
+        ORDER BY c.student_count DESC
+        LIMIT #{limit}
+    </select>
+    
+    <!-- 查询最新课程 -->
+    <select id="getNewCourses" resultMap="CourseResultMap">
+        SELECT c.*, 
+               u.id as instructor_id,
+               u.username as instructor_name, 
+               u.avatar as instructor_avatar,
+               u.email as instructor_email,
+               cat.name as category_name
+        FROM course c
+        LEFT JOIN user u ON c.instructor_id = u.id
+        LEFT JOIN category cat ON c.category_id = cat.id
+        WHERE c.status = 'published' AND c.is_new = 1
+        ORDER BY c.created_at DESC
+        LIMIT #{limit}
+    </select>
+    
+    <!-- 根据分类查询课程 -->
+    <select id="getCoursesByCategory" resultMap="CourseResultMap">
+        SELECT c.*, 
+               u.id as instructor_id,
+               u.username as instructor_name, 
+               u.avatar as instructor_avatar,
+               u.email as instructor_email,
+               cat.name as category_name
+        FROM course c
+        LEFT JOIN user u ON c.instructor_id = u.id
+        LEFT JOIN category cat ON c.category_id = cat.id
+        WHERE c.status = 'published' AND c.category_id = #{categoryId}
+        ORDER BY c.created_at DESC
+        LIMIT #{limit}
+    </select>
+    
+    <!-- 更新课程评分 -->
+    <update id="updateCourseRating">
+        UPDATE course 
+        SET rating = (
+            SELECT AVG(rating) 
+            FROM course_review 
+            WHERE course_id = #{courseId} AND status = 1
+        ),
+        rating_count = (
+            SELECT COUNT(*) 
+            FROM course_review 
+            WHERE course_id = #{courseId} AND status = 1
+        )
+        WHERE id = #{courseId}
+    </update>
+    
+    <!-- 更新课程学员数 -->
+    <update id="updateStudentCount">
+        UPDATE course 
+        SET student_count = (
+            SELECT COUNT(*) 
+            FROM user_course 
+            WHERE course_id = #{courseId} AND status = 1
+        )
+        WHERE id = #{courseId}
+    </update>
+    
+    <!-- 根据讲师ID查询课程 -->
+    <select id="getCoursesByInstructor" resultMap="CourseResultMap">
+        SELECT c.*, 
+               u.id as instructor_id,
+               u.username as instructor_name, 
+               u.avatar as instructor_avatar,
+               u.email as instructor_email,
+               cat.name as category_name
+        FROM course c
+        LEFT JOIN user u ON c.instructor_id = u.id
+        LEFT JOIN category cat ON c.category_id = cat.id
+        WHERE c.instructor_id = #{instructorId}
+        ORDER BY c.created_at DESC
+    </select>
+    
+    <!-- 插入课程 -->
+    <insert id="insertCourse" parameterType="top.ooyyh.edusphere.entity.Course" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO course (title, subtitle, description, cover_image, instructor_id, category_id, price, original_price, is_free, level, duration, student_count, rating, rating_count, is_hot, is_new, status, created_at, updated_at)
+        VALUES (#{title}, #{subtitle}, #{description}, #{coverImage}, #{instructorId}, #{categoryId}, #{price}, #{originalPrice}, #{isFree}, #{level}, #{duration}, #{studentCount}, #{rating}, #{ratingCount}, #{isHot}, #{isNew}, #{status}, #{createdAt}, #{updatedAt})
+    </insert>
+    
+    <!-- 更新课程 -->
+    <update id="updateCourse" parameterType="top.ooyyh.edusphere.entity.Course">
+        UPDATE course 
+        SET title = #{title},
+            subtitle = #{subtitle},
+            description = #{description},
+            cover_image = #{coverImage},
+            category_id = #{categoryId},
+            price = #{price},
+            original_price = #{originalPrice},
+            is_free = #{isFree},
+            level = #{level},
+            duration = #{duration},
+            is_hot = #{isHot},
+            is_new = #{isNew},
+            status = #{status},
+            updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+    
+    <!-- 删除课程 -->
+    <delete id="deleteCourse">
+        DELETE FROM course WHERE id = #{id}
+    </delete>
+    
+    <!-- 根据状态查询课程 -->
+    <select id="getCoursesByStatus" resultMap="CourseResultMap">
+        SELECT c.*, 
+               u.id as instructor_id, u.username as instructor_name, 
+               u.avatar as instructor_avatar, u.email as instructor_email
+        FROM course c
+        LEFT JOIN user u ON c.instructor_id = u.id
+        WHERE c.status = #{status}
+        ORDER BY c.created_at DESC
+    </select>
+    
+    <!-- 获取所有课程（管理员） -->
+    <select id="getAllCourses" resultMap="CourseResultMap">
+        SELECT c.*, 
+               u.id as instructor_id, u.username as instructor_name, 
+               u.avatar as instructor_avatar, u.email as instructor_email
+        FROM course c
+        LEFT JOIN user u ON c.instructor_id = u.id
+        ORDER BY c.created_at DESC
+    </select>
+    
+    <!-- 添加用户课程关系 -->
+    <insert id="insertUserCourse">
+        INSERT INTO user_course (user_id, course_id, purchase_price, purchase_time, status, created_at)
+        VALUES (#{userId}, #{courseId}, #{purchasePrice}, NOW(), 1, NOW())
+    </insert>
+    
+</mapper>

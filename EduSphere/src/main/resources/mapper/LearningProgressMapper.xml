@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.ooyyh.edusphere.mapper.LearningProgressMapper">
+
+    <!-- 学习进度结果映射 -->
+    <resultMap id="LearningProgressResultMap" type="top.ooyyh.edusphere.entity.LearningProgress">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="lessonId" column="lesson_id"/>
+        <result property="progress" column="progress"/>
+        <result property="completed" column="completed"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 根据用户ID和课时ID获取学习进度 -->
+    <select id="getByUserAndLesson" resultMap="LearningProgressResultMap">
+        SELECT * FROM learning_progress 
+        WHERE user_id = #{userId} AND lesson_id = #{lessonId}
+    </select>
+
+    <!-- 插入学习进度记录 -->
+    <insert id="insertProgress" parameterType="top.ooyyh.edusphere.entity.LearningProgress" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO learning_progress (
+            user_id, course_id, lesson_id, progress, completed, created_at, updated_at
+        ) VALUES (
+            #{userId}, #{courseId}, #{lessonId}, #{progress}, #{completed}, #{createdAt}, #{updatedAt}
+        )
+    </insert>
+
+    <!-- 更新学习进度记录 -->
+    <update id="updateProgress" parameterType="top.ooyyh.edusphere.entity.LearningProgress">
+        UPDATE learning_progress 
+        SET progress = #{progress}, 
+            completed = #{completed}, 
+            updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据用户ID获取学习记录 -->
+    <select id="getByUserId" resultMap="LearningProgressResultMap">
+        SELECT * FROM learning_progress 
+        WHERE user_id = #{userId}
+        ORDER BY updated_at DESC
+    </select>
+
+    <!-- 获取用户在指定课程中已完成的课时数 -->
+    <select id="getCompletedLessonsByUserAndCourse" resultType="int">
+        SELECT COUNT(*) FROM learning_progress 
+        WHERE user_id = #{userId} 
+        AND course_id = #{courseId} 
+        AND completed = 1
+    </select>
+
+</mapper>

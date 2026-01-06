@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.ooyyh.edusphere.mapper.CartMapper">
+    
+    <!-- 购物车结果映射 -->
+    <resultMap id="CartResultMap" type="top.ooyyh.edusphere.entity.Cart">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="createdAt" column="created_at"/>
+        <association property="course" javaType="top.ooyyh.edusphere.entity.Course">
+            <id property="id" column="course_id"/>
+            <result property="title" column="course_title"/>
+            <result property="price" column="course_price"/>
+            <result property="coverImage" column="course_cover"/>
+        </association>
+    </resultMap>
+    
+    <!-- 获取用户购物车 -->
+    <select id="getUserCart" resultMap="CartResultMap">
+        SELECT c.*, co.title as course_title, co.price as course_price, co.cover_image as course_cover
+        FROM cart c
+        LEFT JOIN course co ON c.course_id = co.id
+        WHERE c.user_id = #{userId}
+        ORDER BY c.created_at DESC
+    </select>
+    
+    <!-- 添加到购物车 -->
+    <insert id="addToCart" parameterType="top.ooyyh.edusphere.entity.Cart">
+        INSERT INTO cart (user_id, course_id, created_at)
+        VALUES (#{userId}, #{courseId}, #{createdAt})
+    </insert>
+    
+    <!-- 从购物车移除 -->
+    <delete id="removeFromCart">
+        DELETE FROM cart 
+        WHERE user_id = #{userId} AND course_id = #{courseId}
+    </delete>
+    
+    <!-- 清空购物车 -->
+    <delete id="clearCart">
+        DELETE FROM cart WHERE user_id = #{userId}
+    </delete>
+    
+    <!-- 检查课程是否在购物车中 -->
+    <select id="isInCart" resultType="java.lang.Boolean">
+        SELECT CASE WHEN COUNT(1) > 0 THEN TRUE ELSE FALSE END
+        FROM cart
+        WHERE user_id = #{userId} AND course_id = #{courseId}
+    </select>
+    
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.ooyyh.edusphere.mapper.CourseFavoriteMapper">
+
+    <!-- 收藏结果映射 -->
+    <resultMap id="FavoriteResultMap" type="top.ooyyh.edusphere.entity.CourseFavorite">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="createdAt" column="created_at"/>
+        <association property="course" javaType="top.ooyyh.edusphere.entity.Course">
+            <id property="id" column="course_id"/>
+            <result property="title" column="course_title"/>
+            <result property="subtitle" column="course_subtitle"/>
+            <result property="price" column="course_price"/>
+            <result property="coverImage" column="course_cover"/>
+            <result property="instructorId" column="instructor_id"/>
+            <result property="categoryId" column="category_id"/>
+            <result property="rating" column="rating"/>
+            <result property="studentCount" column="student_count"/>
+        </association>
+    </resultMap>
+
+    <!-- 获取用户收藏列表 -->
+    <select id="getUserFavorites" resultMap="FavoriteResultMap">
+        SELECT f.*,
+               c.title as course_title,
+               c.subtitle as course_subtitle,
+               c.price as course_price,
+               c.cover_image as course_cover,
+               c.instructor_id,
+               c.category_id,
+               c.rating,
+               c.student_count
+        FROM course_favorite f
+        LEFT JOIN course c ON f.course_id = c.id
+        WHERE f.user_id = #{userId}
+        ORDER BY f.created_at DESC
+    </select>
+
+    <!-- 添加收藏 -->
+    <insert id="addFavorite" parameterType="top.ooyyh.edusphere.entity.CourseFavorite">
+        INSERT INTO course_favorite (user_id, course_id, created_at)
+        VALUES (#{userId}, #{courseId}, NOW())
+    </insert>
+
+    <!-- 移除收藏 -->
+    <delete id="removeFavorite">
+        DELETE FROM course_favorite
+        WHERE user_id = #{userId} AND course_id = #{courseId}
+    </delete>
+
+    <!-- 检查是否已收藏 -->
+    <select id="isFavorited" resultType="java.lang.Boolean">
+        SELECT CASE WHEN COUNT(1) > 0 THEN TRUE ELSE FALSE END
+        FROM course_favorite
+        WHERE user_id = #{userId} AND course_id = #{courseId}
+    </select>
+
+    <!-- 获取课程收藏数 -->
+    <select id="getFavoriteCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM course_favorite
+        WHERE course_id = #{courseId}
+    </select>
+
+</mapper>

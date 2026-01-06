@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.ooyyh.edusphere.mapper.UserBalanceMapper">
+
+    <resultMap id="UserBalanceResultMap" type="top.ooyyh.edusphere.entity.UserBalance">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="balance" property="balance"/>
+        <result column="frozen_balance" property="frozenBalance"/>
+        <result column="total_recharge" property="totalRecharge"/>
+        <result column="total_consumption" property="totalConsumption"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <select id="getByUserId" resultMap="UserBalanceResultMap">
+        SELECT * FROM user_balance WHERE user_id = #{userId}
+    </select>
+
+    <update id="updateBalance">
+        UPDATE user_balance 
+        SET balance = #{balance},
+            total_recharge = #{totalRecharge},
+            total_consumption = #{totalConsumption},
+            updated_at = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="addBalance">
+        UPDATE user_balance 
+        SET balance = balance + #{amount},
+            total_recharge = total_recharge + #{amount},
+            updated_at = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="subtractBalance">
+        UPDATE user_balance 
+        SET balance = balance - #{amount},
+            total_consumption = total_consumption + #{amount},
+            updated_at = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+</mapper>

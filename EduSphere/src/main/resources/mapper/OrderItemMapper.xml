@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.ooyyh.edusphere.mapper.OrderItemMapper">
+    
+    <!-- 订单项结果映射 -->
+    <resultMap id="OrderItemResultMap" type="top.ooyyh.edusphere.entity.OrderItem">
+        <id property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="courseTitle" column="course_title"/>
+        <result property="coursePrice" column="course_price"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+    
+    <!-- 添加订单项 -->
+    <insert id="addOrderItem" parameterType="top.ooyyh.edusphere.entity.OrderItem">
+        INSERT INTO order_item (order_id, course_id, course_title, course_price, created_at)
+        VALUES (#{orderId}, #{courseId}, #{courseTitle}, #{coursePrice}, #{createdAt})
+    </insert>
+    
+    <!-- 根据订单ID查询订单项 -->
+    <select id="getOrderItemsByOrderId" resultMap="OrderItemResultMap">
+        SELECT * FROM order_item 
+        WHERE order_id = #{orderId}
+        ORDER BY created_at ASC
+    </select>
+    
+</mapper>

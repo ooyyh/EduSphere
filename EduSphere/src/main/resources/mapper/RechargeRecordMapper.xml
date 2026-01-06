@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.ooyyh.edusphere.mapper.RechargeRecordMapper">
+
+    <resultMap id="RechargeRecordResultMap" type="top.ooyyh.edusphere.entity.RechargeRecord">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="amount" property="amount"/>
+        <result column="balance_before" property="balanceBefore"/>
+        <result column="balance_after" property="balanceAfter"/>
+        <result column="recharge_type" property="rechargeType"/>
+        <result column="remark" property="remark"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <select id="getByUserId" resultMap="RechargeRecordResultMap">
+        SELECT * FROM recharge_record 
+        WHERE user_id = #{userId}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="getByUserIdWithPage" resultMap="RechargeRecordResultMap">
+        SELECT * FROM recharge_record 
+        WHERE user_id = #{userId}
+        ORDER BY created_at DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="countByUserId" resultType="int">
+        SELECT COUNT(*) FROM recharge_record WHERE user_id = #{userId}
+    </select>
+
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.ooyyh.edusphere.mapper.UserCourseMapper">
+    
+    <!-- 用户课程关系结果映射 -->
+    <resultMap id="UserCourseResultMap" type="top.ooyyh.edusphere.entity.UserCourse">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="purchasePrice" column="purchase_price"/>
+        <result property="purchaseTime" column="purchase_time"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+    
+    <!-- 获取用户购买的课程 -->
+    <select id="getUserCourses" resultMap="UserCourseResultMap">
+        SELECT * FROM user_course 
+        WHERE user_id = #{userId} AND status = 1
+        ORDER BY created_at DESC
+    </select>
+    
+    <!-- 检查用户是否已购买课程 -->
+    <select id="hasUserPurchased" resultType="java.lang.Boolean">
+        SELECT CASE WHEN COUNT(1) > 0 THEN TRUE ELSE FALSE END
+        FROM user_course
+        WHERE user_id = #{userId} AND course_id = #{courseId} AND status = 1
+    </select>
+    
+    <!-- 添加用户课程关系 -->
+    <insert id="addUserCourse" parameterType="top.ooyyh.edusphere.entity.UserCourse">
+        INSERT INTO user_course (user_id, course_id, purchase_price, purchase_time, status, created_at)
+        VALUES (#{userId}, #{courseId}, #{purchasePrice}, #{purchaseTime}, #{status}, #{createdAt})
+    </insert>
+    
+</mapper>

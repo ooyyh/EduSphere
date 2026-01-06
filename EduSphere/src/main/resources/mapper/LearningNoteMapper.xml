@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.ooyyh.edusphere.mapper.LearningNoteMapper">
+
+    <!-- 笔记结果映射 -->
+    <resultMap id="NoteResultMap" type="top.ooyyh.edusphere.entity.LearningNote">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="lessonId" column="lesson_id"/>
+        <result property="content" column="content"/>
+        <result property="videoTime" column="video_time"/>
+        <result property="isPublic" column="is_public"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="username" column="username"/>
+        <result property="lessonTitle" column="lesson_title"/>
+    </resultMap>
+
+    <!-- 获取用户所有笔记 -->
+    <select id="getUserNotes" resultMap="NoteResultMap">
+        SELECT n.*, u.username, l.title as lesson_title
+        FROM learning_note n
+        LEFT JOIN user u ON n.user_id = u.id
+        LEFT JOIN course_lesson l ON n.lesson_id = l.id
+        WHERE n.user_id = #{userId}
+        ORDER BY n.created_at DESC
+    </select>
+
+    <!-- 获取课程的笔记 -->
+    <select id="getCourseNotes" resultMap="NoteResultMap">
+        SELECT n.*, u.username, l.title as lesson_title
+        FROM learning_note n
+        LEFT JOIN user u ON n.user_id = u.id
+        LEFT JOIN course_lesson l ON n.lesson_id = l.id
+        WHERE n.course_id = #{courseId} AND n.user_id = #{userId}
+        ORDER BY n.created_at DESC
+    </select>
+
+    <!-- 获取课时的笔记 -->
+    <select id="getLessonNotes" resultMap="NoteResultMap">
+        SELECT n.*, u.username, l.title as lesson_title
+        FROM learning_note n
+        LEFT JOIN user u ON n.user_id = u.id
+        LEFT JOIN course_lesson l ON n.lesson_id = l.id
+        WHERE n.lesson_id = #{lessonId} AND n.user_id = #{userId}
+        ORDER BY n.video_time ASC
+    </select>
+
+    <!-- 创建笔记 -->
+    <insert id="createNote" parameterType="top.ooyyh.edusphere.entity.LearningNote" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO learning_note (user_id, course_id, lesson_id, content, video_time, is_public, created_at, updated_at)
+        VALUES (#{userId}, #{courseId}, #{lessonId}, #{content}, #{videoTime}, #{isPublic}, NOW(), NOW())
+    </insert>
+
+    <!-- 更新笔记 -->
+    <update id="updateNote">
+        UPDATE learning_note
+        SET content = #{content},
+            video_time = #{videoTime},
+            is_public = #{isPublic},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除笔记 -->
+    <delete id="deleteNote">
+        DELETE FROM learning_note
+        WHERE id = #{noteId} AND user_id = #{userId}
+    </delete>
+
+    <!-- 根据ID获取笔记 -->
+    <select id="getNoteById" resultMap="NoteResultMap">
+        SELECT n.*, u.username, l.title as lesson_title
+        FROM learning_note n
+        LEFT JOIN user u ON n.user_id = u.id
+        LEFT JOIN course_lesson l ON n.lesson_id = l.id
+        WHERE n.id = #{noteId}
+    </select>
+
+    <!-- 获取课程公开笔记 -->
+    <select id="getPublicNotes" resultMap="NoteResultMap">
+        SELECT n.*, u.username, l.title as lesson_title
+        FROM learning_note n
+        LEFT JOIN user u ON n.user_id = u.id
+        LEFT JOIN course_lesson l ON n.lesson_id = l.id
+        WHERE n.course_id = #{courseId} AND n.is_public = 1
+        ORDER BY n.created_at DESC
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+    </select>
+
+</mapper>
